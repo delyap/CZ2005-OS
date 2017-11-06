@@ -1,0 +1,72 @@
+int VpnToPhyPage(int vpn)
+
+IptEntry* test = hashIPT(vpn, currentThread->pid);
+
+test = test->next; 
+
+if (test){
+	while(test->next){
+		if ((test->vPage == vpn) && (test->pid == currentThread->pid)){
+			return test->phyPage;
+		}
+		test = test->next;
+	}
+}
+return -1;
+
+
+
+===    ===   ===   ===   ===   ===   ===   ===   ===   ===   ===   ===   ===   ===   ===
+
+
+
+void InsertToTLB(int vpn, int phyPage)
+
+	bool foundEmpty = false;
+	static int oldestEntry = 0;
+
+for ( ; i<TLBSize; i++){
+	if(!machine->tlb[i].valid){
+		foundEmpty = true;
+		break;
+	}
+}
+
+if(!foundEmpty){
+	i = oldestEntry;
+}
+
+oldestEntry = (i+1) % TLBSize;
+
+
+
+===    ===   ===   ===   ===   ===   ===   ===   ===   ===   ===   ===   ===   ===   ===
+
+
+
+int clockAlgorithm(void)
+
+static int clockHand = 0;
+
+phyPage = -1;
+
+while (phyPage<0){
+	if(!memoryTable[clockHand].valid){
+		phyPage = clockHand;
+	}
+
+	else if ((!memoryTable[clockHand].dirty) && (memoryTable[clockHand].clockCounter == OLD_ENOUGH)){
+		phyPage = clockHand;
+	}
+
+	else if ((!memoryTable[clockHand].dirty) && (memoryTable[clockHand].clockCounter == OLD_ENOUGH + DIRTY_ALLOWANCE)){
+		phyPage = clockHand;
+	}
+
+	else{
+		memoryTable[clockHand].clockCounter++;
+	}
+
+	clockHand = (clockHand+1) % NumPhysPages;
+}
+return phyPage;
